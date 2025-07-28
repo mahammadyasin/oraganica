@@ -9,10 +9,12 @@ import com.organica.entities.User;
 import com.organica.payload.AddreesDto;
 import com.organica.payload.SingIn;
 import com.organica.payload.UserDto;
+import com.organica.repositories.AddressRepository;
 import com.organica.repositories.RoleRepository;
 import com.organica.repositories.UserRepo;
 import com.organica.services.UserService;
 
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,10 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -48,6 +47,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private final AddressRepository addressRepository;
+
+    public UserServiceImpl(AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
+    }
 
 
     @Override
@@ -140,27 +145,40 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String updateUserAddress(int userId, AddreesDto addressDto) {
-        User user = userRepo.findById(userId).orElseThrow(() -> {
-            throw new NoSuchElementException("User not found");
-        });
+    public String updateUserAddress(String userId, AddreesDto addressDto) {
+        try {
+            User user = userRepo.findById(Integer.valueOf(userId))
+                    .orElseThrow(() -> new NoSuchElementException("User not found"));
 
-        
+            List<Address> addresses = addressRepository.findAllByUserUserid(Long.valueOf(userId));
 
-        if (user.getAddress() == null) {
-            
-            user.setAddress(new Address());
+            if (!addresses.isEmpty()) {
+                addresses.forEach(address -> {
+                    address.setStreet(addressDto.getStreet());
+                    address.setCity(addressDto.getCity());
+                    address.setState(addressDto.getState());
+                    address.setZipCode(addressDto.getZipCode());
+                    address.setCountry(addressDto.getCountry());
+                    address.setLandmark(addressDto.getLandmark());
+                });
+            } else {
+                Address address = new Address();
+                address.setStreet(addressDto.getStreet());
+                address.setCity(addressDto.getCity());
+                address.setState(addressDto.getState());
+                address.setZipCode(addressDto.getZipCode());
+                address.setCountry(addressDto.getCountry());
+                address.setLandmark(addressDto.getLandmark());
+                address.setUser(user);
+                addressRepository.save(address);
+            }
+            return "Address updated successfully";
+
+        } catch (NoSuchElementException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update address", e);
         }
-
-        Address address = user.getAddress();
-        address.setStreet(addressDto.getStreet());
-        address.setCity(addressDto.getCity());
-        address.setState(addressDto.getState());
-        address.setZipCode(addressDto.getZipCode());
-        address.setCountry(addressDto.getCountry());
-        address.setLandmark(addressDto.getLandmark());
-
-        userRepo.save(user);
-        return "Address updated successfully";
     }
+
 }

@@ -49,7 +49,7 @@ public class UserController {
     
 
     @PutMapping("/addAddress/{id}")
-    public String updateUserAddress(int userId, AddreesDto addressDto) {
+    public String updateUserAddress(String userId, AddreesDto addressDto) {
         return userService.updateUserAddress(userId, addressDto);
     }
     

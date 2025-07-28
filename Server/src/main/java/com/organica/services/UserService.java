@@ -15,5 +15,5 @@ public interface UserService {
 
     String updateUserRole(int userId, String role);
 
-    String updateUserAddress(int userId, AddreesDto addressDto);
+    String updateUserAddress(String userId, AddreesDto addressDto);
 }
