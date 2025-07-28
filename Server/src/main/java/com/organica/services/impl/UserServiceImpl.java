@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
             User user = userRepo.findById(Integer.valueOf(userId))
                     .orElseThrow(() -> new NoSuchElementException("User not found"));
 
-            List<Address> addresses = addressRepository.findAllByUserUserid(Long.valueOf(userId));
+            List<Address> addresses = addressRepository.getAddressesByUser(Long.valueOf(userId));
 
             if (!addresses.isEmpty()) {
                 addresses.forEach(address -> {
