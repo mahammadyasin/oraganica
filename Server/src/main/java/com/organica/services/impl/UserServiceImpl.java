@@ -58,45 +58,53 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String CreateUser(UserDto userDto) {
-        User user = this.modelMapper.map(userDto, User.class);
-        List<Role> list = new ArrayList<>();
-        // list.add(new Role(TotalRoles.ADMIN.name()));
+        try {
+            User user = this.modelMapper.map(userDto, User.class);
+            List<Role> list = new ArrayList<>();
+            // list.add(new Role(TotalRoles.ADMIN.name()));
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Cart cart = new Cart();
-        cart.setUser(user);
-        user.setCart(cart);
+            userRepo.findByEmail(userDto.getEmail()).ifPresent(u -> {
+                throw new IllegalArgumentException("Email already exists");
+            });
 
-        user = userRepo.save(user);
-        user.setDate(new Date());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            Cart cart = new Cart();
+            cart.setUser(user);
+            user.setCart(cart);
 
-        if (userDto.getRole() != null && !userDto.getRole().isEmpty()) {
-            for (String roleName : userDto.getRole()) {
-                if (roleName.equals(TotalRoles.ADMIN.name())) {
-                    Role role = new Role(TotalRoles.ADMIN.name());
-                    role.setUser(user);
-                    roleRepository.save(role);
-                    list.add(role);
-                } else if (roleName.equals(TotalRoles.USER.name())) {
-                    Role role = new Role(TotalRoles.USER.name());
-                    role.setUser(user);
-                    roleRepository.save(role);
-                    list.add(role);
-                } else {
-                    throw new IllegalArgumentException("Invalid role: " + roleName);
+            user = userRepo.save(user);
+            user.setDate(new Date());
+
+            if (userDto.getRole() != null && !userDto.getRole().isEmpty()) {
+                for (String roleName : userDto.getRole()) {
+                    if (roleName.equals(TotalRoles.ADMIN.name())) {
+                        Role role = new Role(TotalRoles.ADMIN.name());
+                        role.setUser(user);
+                        roleRepository.save(role);
+                        list.add(role);
+                    } else if (roleName.equals(TotalRoles.USER.name())) {
+                        Role role = new Role(TotalRoles.USER.name());
+                        role.setUser(user);
+                        roleRepository.save(role);
+                        list.add(role);
+                    } else {
+                        throw new IllegalArgumentException("Invalid role: " + roleName);
+                    }
                 }
+            } else {
+                Role role = new Role(TotalRoles.USER.name());
+                role.setUser(user);
+                role = roleRepository.save(role);
+                list.add(role);
             }
-        } else {
-            Role role = new Role(TotalRoles.USER.name());
-            role.setUser(user);
-            role = roleRepository.save(role);
-            list.add(role);
+
+            user.setRole(list);
+
+            this.userRepo.save(user);
+            return "User registred Successfully..!";
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
         }
-
-        user.setRole(list);
-
-        this.userRepo.save(user);
-        return "User registred Successfully..!";
     }
 
 
