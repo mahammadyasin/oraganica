@@ -12,11 +12,13 @@ import com.organica.payload.UserDto;
 import com.organica.repositories.AddressRepository;
 import com.organica.repositories.RoleRepository;
 import com.organica.repositories.UserRepo;
+import com.organica.response.AddressReposeModel;
 import com.organica.services.UserService;
 
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +28,6 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
-
 
 
     @Autowired
@@ -97,16 +98,15 @@ public class UserServiceImpl implements UserService {
         this.userRepo.save(user);
         return "User registred Successfully..!";
     }
-    
-    
+
 
     @Override
     public SingIn SingIn(SingIn singIn) {
-        this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(singIn.getEmail(),singIn.getPassword()));
-        User user=this.userRepo.findByEmail(singIn.getEmail()).orElseThrow(()->{
+        this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(singIn.getEmail(), singIn.getPassword()));
+        User user = this.userRepo.findByEmail(singIn.getEmail()).orElseThrow(() -> {
             throw new NoSuchElementException("User not found");
         });
-        
+
         List<Role> roles = roleRepository.getRolesByUserId(user.getUserid());
 
         if (roles.isEmpty()) {
@@ -114,20 +114,19 @@ public class UserServiceImpl implements UserService {
         } else {
             singIn.setRole(roles.stream().map(Role::getRole).toList());
         }
-        
-        var jwtToken=jwtService.generateToken(user);
+
+        var jwtToken = jwtService.generateToken(user);
         singIn.setJwt(jwtToken);
         return singIn;
     }
 
 
-
     @Override
     public String updateUserRole(int userId, String role) {
-       User user =  userRepo.findById(userId).orElseThrow(() -> {
+        User user = userRepo.findById(userId).orElseThrow(() -> {
             throw new NoSuchElementException("User not found");
-       });
-        
+        });
+
         user.getRole().forEach(r -> {
             if (r.getRole().equals(role)) {
                 throw new IllegalArgumentException("Role already exists for this user");
@@ -143,41 +142,86 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
-    public String updateUserAddress(String userId, AddreesDto addressDto) {
+    public String addUserAddress(String userId, AddreesDto addressDto) {
         try {
             User user = userRepo.findById(Integer.valueOf(userId))
                     .orElseThrow(() -> new NoSuchElementException("User not found"));
 
-            List<Address> addresses = addressRepository.getAddressesByUser(Long.valueOf(userId));
+            Address address = new Address();
 
-            if (!addresses.isEmpty()) {
-                addresses.forEach(address -> {
-                    address.setStreet(addressDto.getStreet());
-                    address.setCity(addressDto.getCity());
-                    address.setState(addressDto.getState());
-                    address.setZipCode(addressDto.getZipCode());
-                    address.setCountry(addressDto.getCountry());
-                    address.setLandmark(addressDto.getLandmark());
-                });
-            } else {
-                Address address = new Address();
-                address.setStreet(addressDto.getStreet());
-                address.setCity(addressDto.getCity());
-                address.setState(addressDto.getState());
-                address.setZipCode(addressDto.getZipCode());
-                address.setCountry(addressDto.getCountry());
-                address.setLandmark(addressDto.getLandmark());
-                address.setUser(user);
-                addressRepository.save(address);
-            }
+            address.setStreet(addressDto.getStreet());
+            address.setCity(addressDto.getCity());
+            address.setState(addressDto.getState());
+            address.setZipCode(addressDto.getZipCode());
+            address.setCountry(addressDto.getCountry());
+            address.setLandmark(addressDto.getLandmark());
+            address.setUser(user);
+
+            addressRepository.save(address);
             return "Address updated successfully";
 
         } catch (NoSuchElementException e) {
             return e.getMessage();
         } catch (Exception e) {
             throw new RuntimeException("Failed to update address", e);
+        }
+    }
+
+    @Override
+    public String updateUserAddress(String addressId, AddreesDto addressDto) {
+        addressRepository.findById(Long.valueOf(addressId)).ifPresent(address -> {
+            address.setStreet(addressDto.getStreet());
+            address.setCity(addressDto.getCity());
+            address.setState(addressDto.getState());
+            address.setZipCode(addressDto.getZipCode());
+            address.setCountry(addressDto.getCountry());
+            address.setLandmark(addressDto.getLandmark());
+            addressRepository.save(address);
+        });
+        return "Updated Successfully..!";
+    }
+
+    @Override
+    public ResponseEntity<AddressReposeModel> getAddressById(String addressId) {
+        try {
+            Address address = addressRepository.findById(Long.valueOf(addressId)).orElse(null);
+            if (address != null) {
+                AddressReposeModel addressReposeModel = new AddressReposeModel();
+                addressReposeModel.setAddressId(String.valueOf(address.getId()));
+                addressReposeModel.setStreet(address.getStreet());
+                addressReposeModel.setCity(address.getCity());
+                addressReposeModel.setState(address.getState());
+                addressReposeModel.setZipCode(address.getZipCode());
+                addressReposeModel.setCountry(address.getCountry());
+                addressReposeModel.setLandmark(address.getLandmark());
+                return ResponseEntity.ok(addressReposeModel);
+            } else
+                return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<AddressReposeModel>> getAddressByUserId(String userId) {
+        try {
+            List<Address> addresses = addressRepository.getAddressesByUser(Long.valueOf(userId));
+            List<AddressReposeModel> addressReposeModels = new ArrayList<>();
+            for (Address address : addresses) {
+                AddressReposeModel addressReposeModel = new AddressReposeModel();
+                addressReposeModel.setAddressId(String.valueOf(address.getId()));
+                addressReposeModel.setStreet(address.getStreet());
+                addressReposeModel.setCity(address.getCity());
+                addressReposeModel.setState(address.getState());
+                addressReposeModel.setZipCode(address.getZipCode());
+                addressReposeModel.setCountry(address.getCountry());
+                addressReposeModel.setLandmark(address.getLandmark());
+                addressReposeModels.add(addressReposeModel);
+            }
+            return ResponseEntity.ok(addressReposeModels);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
