@@ -4,6 +4,7 @@ import com.organica.entities.User;
 import com.organica.payload.AddreesDto;
 import com.organica.payload.SingIn;
 import com.organica.payload.UserDto;
+import com.organica.response.AddressReposeModel;
 import com.organica.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 
 
 @RestController
@@ -48,9 +50,23 @@ public class UserController {
     }
     
 
-    @PutMapping("/addAddress/{id}")
-    public String updateUserAddress(int userId, AddreesDto addressDto) {
-        return userService.updateUserAddress(userId, addressDto);
+    @PostMapping("/addAddress")
+    public String addUserAddress(String userId, @RequestBody AddreesDto addressDto) {
+        return userService.addUserAddress(userId, addressDto);
+    }
+
+    @PutMapping("/updateAddress")
+    public String updateUserAddress(String addressId, @RequestBody AddreesDto addressDto) {
+        return userService.updateUserAddress(addressId, addressDto);
+    }
+
+    @GetMapping("/getAddressById")
+    public ResponseEntity<AddressReposeModel> getAddressById(String addressId) {
+        return userService.getAddressById(addressId);
+    }
+    @GetMapping("/getAddressByUserId")
+    public ResponseEntity<List<AddressReposeModel>> getAddressByUserId(String userId) {
+        return userService.getAddressByUserId(userId);
     }
     
 }
