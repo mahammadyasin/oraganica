@@ -122,6 +122,6 @@ Contributions are welcome! If you want to contribute to Organica, please follow 
 
 If you have any questions or suggestions, feel free to contact the project maintainers:
 
-- Vivek Kakadiya - vivek.kakadiya111@gmail.com
+- Mohammad Yasin - mahammadyasinnadaf@gmail.com
 
 
