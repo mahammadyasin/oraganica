@@ -55,16 +55,9 @@ export const Header = () => {
                 </a>
               </li>
               <li>
-                <ScrollLink
-                  activeClass="active"
-                  className="navbar-link"
-                  smooth="linear"
-                  spy
-                  to="contact"
-                  offset={-30}
-                >
+                <a href="/about" className="navbar-link">
                   About
-                </ScrollLink>
+                </a>
               </li>
               <li>
                 {/* <Link to="/shop" activeClass="active" className="navbar-link"  >
@@ -75,16 +68,9 @@ export const Header = () => {
                 </a>
               </li>
               <li>
-                <ScrollLink
-                  activeClass="active"
-                  className="navbar-link"
-                  smooth="linear"
-                  spy
-                  to="blog"
-                  offset={-30}
-                >
+                <a href="/blog" className="navbar-link">
                   Blog
-                </ScrollLink>
+                </a>
               </li>
               {role === "ADMIN" ? (
                 <li>
@@ -101,16 +87,9 @@ export const Header = () => {
                 </li>
               ) : null}
               <li>
-                <ScrollLink
-                  activeClass="active"
-                  className="navbar-link"
-                  smooth="linear"
-                  spy
-                  to="contact"
-                  offset={-30}
-                >
+                <a href="/contact" className="navbar-link">
                   Contact
-                </ScrollLink>
+                </a>
               </li>
             </ul>
           </nav>

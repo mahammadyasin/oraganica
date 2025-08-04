@@ -31,7 +31,6 @@ public class PaymentServiceImpl implements PaymentService {
             Order order= razorpayClient.orders.create(jsonObject);
 
 
-
         return prepatreTransaction(order);
 
 

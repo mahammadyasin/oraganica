@@ -10,6 +10,9 @@ import { Singup } from "../Pages/Singup";
 import { Protected } from "../Component/Protected";
 import AddProductForm from "../Pages/AddProductForm";
 import UpdateProductForm from "../Pages/UpdateProductForm";
+import AddAddressForm from "../Pages/AddAddress";
+import Blog from "../Component/HomeComponent/Blog";
+import Contact from "../Component/HomeComponent/Contact";
 
 export const Router = () => {
   const [isSignedIn, setIsSignedIn] = useState(
@@ -22,6 +25,9 @@ export const Router = () => {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        {/* <Route path="/search" element={<Sear/ />} /> */}
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/contact" element={<Contact />} />
         <Route
           path="/cart"
           element={
@@ -34,6 +40,7 @@ export const Router = () => {
         <Route path="/singup" element={<Singup />} />
         <Route path="/add-product" element={<AddProductForm />} />
         <Route path="/update-product/:id" element={<UpdateProductForm />} />
+        <Route path="/add-address" element={<AddAddressForm />} />
         <Route
           path="/checkout"
           element={
