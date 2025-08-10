@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+// import { useShop } from "../../context/ShopContext";
 
 export const ProductCard = (props) => {
+  // const { role } = useShop();
+  const role = sessionStorage.getItem("role");
+  console.log("check props data=============", props);
+
   const navigate = useNavigate();
 
   // const res = props;
@@ -30,14 +35,15 @@ export const ProductCard = (props) => {
 
   const handalCart = async () => {
     token ? setToken(token) : setToken(sessionStorage.getItem("token"));
-    // if (token === null) {
-    //   toast.error("Please login to add items to cart.");
-    //   navigate("/login");
-    //   return;
-    // } else {
-    //   console.log("Correct token:", token);
-    // }
     if (token === null) {
+      toast.error("Please login to add items to cart.");
+      navigate("/login");
+      return;
+    } else {
+      console.log("Correct token:", token);
+    }
+
+    if (!token) {
       navigate("/login");
     } else {
       console.log("object", token);
@@ -49,7 +55,7 @@ export const ProductCard = (props) => {
         Authorization: "Bearer " + token,
       },
       body: JSON.stringify({
-        productId: props.id,
+        productId: props?.id,
         quantity: 1,
       }),
     });
@@ -136,31 +142,35 @@ export const ProductCard = (props) => {
           <button className="btn btn-primary" onClick={() => handalCart()}>
             Add to Cart
           </button>
-          <button
-            className="btn btn-primary"
-            style={{ marginTop: "6px", backgroundColor: "grey" }}
-            onClick={() =>
-              navigate("/update-product/" + props.id, {
-                state: {
-                  productId: props.id,
-                  productname: props.name,
-                  description: props.description,
-                  price: props.price,
-                  img: props.img,
-                  weight: props.weight,
-                },
-              })
-            }
-          >
-            Edit
-          </button>
-          <button
-            className="btn"
-            onClick={handleDelete}
-            style={{ marginTop: "6px", backgroundColor: "red" }}
-          >
-            Delete
-          </button>
+          {role === "ADMIN" && (
+            <>
+              <button
+                className="btn btn-primary"
+                style={{ marginTop: "6px", backgroundColor: "grey" }}
+                onClick={() =>
+                  navigate("/update-product/" + props.id, {
+                    state: {
+                      productId: props.id,
+                      productname: props.name,
+                      description: props.description,
+                      price: props.price,
+                      img: props.img,
+                      weight: props.weight,
+                    },
+                  })
+                }
+              >
+                Edit
+              </button>
+              <button
+                className="btn"
+                onClick={handleDelete}
+                style={{ marginTop: "6px", backgroundColor: "red" }}
+              >
+                Delete
+              </button>
+            </>
+          )}
         </div>
       </li>
     </>

@@ -17,7 +17,7 @@ export const Home = () => {
       {/* 
     - #HEADER
   */}
-      <Header />
+      {/* <Header /> */}
       {/* 
     - #ASIDE
   */}
@@ -180,7 +180,7 @@ export const Home = () => {
     - #FOOTER
   */}
 
-      <Footer />
+      {/* <Footer /> */}
       {/* 
     - #BACK TO TOP
   */}

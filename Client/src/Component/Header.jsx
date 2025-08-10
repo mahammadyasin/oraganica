@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, NavLink } from "react-router-dom";
 
 import * as Scroll from "react-scroll";
+import { URL } from "../Constants/Constants";
 
 // Or Access Link,Element,etc as follows
 let ScrollLink = Scroll.Link;
@@ -9,7 +10,10 @@ let ScrollLink = Scroll.Link;
 export const Header = () => {
   const [islogin, setislogin] = useState(sessionStorage.getItem("token"));
   const [showSearch, setShowSearch] = useState(false);
+  const [cartCount, setCartrCount] = useState(0);
+  const [loading, setLoading] = useState(false);
   const role = sessionStorage.getItem("role");
+  const [token, setToken] = useState(sessionStorage.getItem("token"));
   // console.log("role", role);
   const navigate = useNavigate();
   const handalRedirect = () => {
@@ -19,6 +23,26 @@ export const Header = () => {
       navigate(`/login`);
     }
   };
+  console.log("check cart count================", cartCount);
+
+  const fatchCart = async () => {
+    // get cart item
+    console.log(token);
+    const res = await fetch(`${URL}/cart/1`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+    const data = await res.json();
+    console.log("check cart data==========", data);
+    // setCartrCount(data);
+    setCartrCount(data?.cartDetalis?.length || 0);
+  };
+
+  useEffect(() => {
+    fatchCart();
+  }, []);
 
   const handalLogout = () => {
     sessionStorage.removeItem("token");
@@ -35,9 +59,9 @@ export const Header = () => {
       <div className="nav-wrapper">
         <div className="container">
           <h1 className="h1">
-            <a href="/" className="logo">
+            <NavLink to="/" className="logo">
               Organ<span className="span">ica</span>
-            </a>
+            </NavLink>
           </h1>
 
           <nav className="navbar" data-navbar="">
@@ -50,27 +74,27 @@ export const Header = () => {
             </button>
             <ul className="navbar-list">
               <li>
-                <a href="/" className="navbar-link">
+                <NavLink to="/" className="navbar-link">
                   Home
-                </a>
+                </NavLink>
               </li>
               <li>
-                <a href="/about" className="navbar-link">
+                <NavLink to="/about" className="navbar-link">
                   About
-                </a>
+                </NavLink>
               </li>
               <li>
                 {/* <Link to="/shop" activeClass="active" className="navbar-link"  >
             Shop
               </Link> */}
-                <a href="/shop" className="navbar-link">
+                <NavLink to="/shop" className="navbar-link">
                   Shop
-                </a>
+                </NavLink>
               </li>
               <li>
-                <a href="/blog" className="navbar-link">
+                <NavLink to="/blog" className="navbar-link">
                   Blog
-                </a>
+                </NavLink>
               </li>
               {role === "ADMIN" ? (
                 <li>
@@ -87,14 +111,14 @@ export const Header = () => {
                 </li>
               ) : null}
               <li>
-                <a href="/contact" className="navbar-link">
+                <NavLink to="/contact" className="navbar-link">
                   Contact
-                </a>
+                </NavLink>
               </li>
             </ul>
           </nav>
           <div className="header-action">
-            <div className="search-wrapper" data-search-wrapper="">
+            {/* <div className="search-wrapper" data-search-wrapper="">
               <button
                 className="header-action-btn"
                 aria-label="Toggle search"
@@ -102,19 +126,7 @@ export const Header = () => {
                 onClick={toggleSearch}
               >
                 <ion-icon name="search-outline" className="search-icon" />
-                {/* <ion-icon name="close-outline" className="close-icon" /> */}
               </button>
-              {/* <div className="input-wrapper">
-                <input
-                  type="search"
-                  name="search"
-                  placeholder="Search here"
-                  className="search-input"
-                />
-                <button className="search-submit" aria-label="Submit search">
-                  <ion-icon name="search-outline" />
-                </button>
-              </div> */}
               {showSearch && (
                 <div className="input-wrapper">
                   <input
@@ -128,7 +140,7 @@ export const Header = () => {
                   </button>
                 </div>
               )}
-            </div>
+            </div> */}
             {/* //whishlist */}
             {/* {islogin ? (
               <button
@@ -163,7 +175,7 @@ export const Header = () => {
                 >
                   <ion-icon name="basket-outline" />
                   <data className="btn-badge" value={2}>
-                    02
+                    {cartCount}
                   </data>
                 </button>
               </>

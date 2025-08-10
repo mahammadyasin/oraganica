@@ -94,7 +94,7 @@ export const Cart = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="shopping-cart">
         <div className="px-4 px-lg-0">
           <div className="pb-5">
@@ -199,7 +199,7 @@ export const Cart = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
