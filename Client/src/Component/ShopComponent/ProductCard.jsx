@@ -139,9 +139,11 @@ export const ProductCard = (props) => {
               Rs {props.price}
             </data>
           </div>
-          <button className="btn btn-primary" onClick={() => handalCart()}>
-            Add to Cart
-          </button>
+          {role === "USER" && (
+            <button className="btn btn-primary" onClick={() => handalCart()}>
+              Add to Cart
+            </button>
+          )}
           {role === "ADMIN" && (
             <>
               <button

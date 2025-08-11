@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 public class SingIn {
 
+    private Integer userId;
     private String Email;
     private String Password;
     private String jwt;

@@ -3,6 +3,7 @@ import { Footer } from "../Component/Footer";
 import { Header } from "../Component/Header";
 import { Items } from "../Component/CartComponent/Items";
 import { URL } from "../Constants/Constants";
+import AddAddressForm from "../Pages/AddAddress";
 
 export const Cart = () => {
   useEffect(() => {
@@ -145,16 +146,11 @@ export const Cart = () => {
                 </div>
               </div>
               <div>
-                <div className="row py-5 p-4 bg-white rounded shadow-sm">
-                  <p>address</p>
-                </div>
-                <div className="col-lg-6">Add Address</div>
-                <div className="col-lg-6"> </div>
+                <AddAddressForm />
               </div>
 
-              <div className="row py-5 p-4 bg-white rounded shadow-sm">
-                <div className="col-lg-6"></div>
-                <div className="col-lg-6">
+              <div className="row py-5 p-4 bg-white rounded shadow-sm ">
+                <div className="col-lg-6 m-auto">
                   <div className="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">
                     Order summary{" "}
                   </div>

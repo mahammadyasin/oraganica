@@ -123,6 +123,8 @@ public class UserServiceImpl implements UserService {
             singIn.setRole(roles.stream().map(Role::getRole).toList());
         }
 
+        singIn.setUserId(Math.toIntExact(user.getUserid()));
+
         var jwtToken = jwtService.generateToken(user);
         singIn.setJwt(jwtToken);
         return singIn;
