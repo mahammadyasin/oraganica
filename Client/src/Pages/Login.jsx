@@ -52,8 +52,11 @@ export const Login = () => {
 
     const data = await res.json();
     sessionStorage.setItem("token", data.jwt);
+
+    console.log("Login Data:", data);
     if (res.status === 200) {
       sessionStorage.setItem("role", data.role[0]);
+      sessionStorage.setItem("userId", data.userId);
       onToast("Login Successfull!!");
       window.location.href = "/";
     } else {
@@ -77,8 +80,8 @@ export const Login = () => {
             Login
           </h4>
         </div>
-        <div className="login-box-content">
-          <div className="fb-login box-shadow">
+        {/* <div className="login-box-content"> */}
+          {/* <div className="fb-login box-shadow">
             <a
               className="d-flex flex-row align-items-center social-login-link"
               href="#"
@@ -94,8 +97,8 @@ export const Login = () => {
               />
               Login with Facebook
             </a>
-          </div>
-          <div className="gp-login box-shadow">
+          </div> */}
+          {/* <div className="gp-login box-shadow">
             <a
               className="d-flex flex-row align-items-center social-login-link"
               style={{ marginBottom: 10 }}
@@ -107,11 +110,11 @@ export const Login = () => {
               />
               Login with Google+
             </a>
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
         <div className="d-flex flex-row align-items-center login-box-seperator-container">
-          <div className="login-box-seperator" />
-          <div className="login-box-seperator-text">
+          {/* <div className="login-box-seperator" /> */}
+          {/* <div className="login-box-seperator-text">
             <p
               style={{
                 marginBottom: 0,
@@ -123,8 +126,8 @@ export const Login = () => {
             >
               or
             </p>
-          </div>
-          <div className="login-box-seperator" />
+          </div> */}
+          {/* <div className="login-box-seperator" /> */}
         </div>
         <div className="email-login" style={{ backgroundColor: "#ffffff" }}>
           <input

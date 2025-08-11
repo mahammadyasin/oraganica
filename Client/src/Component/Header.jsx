@@ -35,7 +35,7 @@ export const Header = () => {
       },
     });
     const data = await res.json();
-    console.log("check cart data==========", data);
+    console.log("check cart data==========", data.length);
     // setCartrCount(data);
     setCartrCount(data?.cartDetalis?.length || 0);
   };
@@ -165,21 +165,20 @@ export const Header = () => {
               >
                 <ion-icon name="person-circle-outline"></ion-icon>
               </button>
-            ) : (
-              <>
-                <button
-                  className="header-action-btn"
-                  aria-label="Open shopping cart"
-                  data-panel-btn="cart"
-                  onClick={handalRedirect}
-                >
-                  <ion-icon name="basket-outline" />
-                  <data className="btn-badge" value={2}>
-                    {cartCount}
-                  </data>
-                </button>
-              </>
-            )}
+            ) : role === "USER" ? (
+              <button
+                className="header-action-btn"
+                aria-label="Open shopping cart"
+                data-panel-btn="cart"
+                onClick={handalRedirect}
+              >
+                <ion-icon name="basket-outline" />
+                <data className="btn-badge" value={2}>
+                  {cartCount}
+                </data>
+              </button>
+            ) : null}
+
             {islogin ? (
               <button
                 className="header-action-btn"

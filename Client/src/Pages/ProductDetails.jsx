@@ -58,7 +58,7 @@ export const ProductDetails = () => {
     window.scrollTo(0, 0);
 
     const fatchData = async () => {
-      const response = await fetch(`${URL}/product/find/${id}`, {
+      const response = await fetch(`${URL}/product/find${id}`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -75,10 +75,7 @@ export const ProductDetails = () => {
       <>
         {/* <Header /> */}
         <div className="pd-wrap">
-          <div
-            className="container"
-           
-          >
+          <div className="container">
             {/* <div className="heading-section">
         <h2>Product Details</h2>
       </div> */}

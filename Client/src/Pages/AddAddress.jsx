@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import "../Css/AddAddressForm.css";
-// Use this in your JS/React file
 
 const AddAddressForm = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +14,8 @@ const AddAddressForm = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [userData, setUserData] = useState(null); // Store updated user data
+  const [loadingUser, setLoadingUser] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,10 +24,16 @@ const AddAddressForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form Data Submitted:", formData);
     try {
-      const userId = "123"; // Replace with actual logic
+      const userId = sessionStorage.getItem("userId");
+      if (!userId) {
+        alert("User ID not found in sessionStorage");
+        return;
+      }
+
       const response = await fetch(
-        `http://localhost:8080/auth/addAddress?userId=${userId}`,
+        `http://localhost:9192/auth/addAddress?userId=${userId}`,
         {
           method: "POST",
           headers: {
@@ -39,6 +46,17 @@ const AddAddressForm = () => {
       if (!response.ok) throw new Error("Submission failed");
 
       setIsSubmitted(true);
+
+      // Fetch updated user data after submitting address
+      setLoadingUser(true);
+      const userRes = await fetch(
+        `http://localhost:9192/auth/getUser`
+      );
+      if (!userRes.ok) throw new Error("Failed to fetch updated user data");
+
+      const userJson = await userRes.json();
+      setUserData(userJson);
+      setLoadingUser(false);
     } catch (err) {
       console.error("Submit Error:", err);
       alert("Something went wrong. Try again.");
@@ -46,14 +64,40 @@ const AddAddressForm = () => {
   };
 
   return (
-    <div className="address-container">
+    <div className="address-container m-auto">
       <h2>Add New Address</h2>
 
       {isSubmitted ? (
-        <div className="success-message">
-          <CheckCircle size={48} color="green" />
-          <p>Address submitted successfully!</p>
-        </div>
+        <>
+          <div className="success-message">
+            <CheckCircle size={48} color="green" />
+            <p>Address submitted successfully!</p>
+          </div>
+
+          {loadingUser ? (
+            <p>Loading updated user data...</p>
+          ) : userData ? (
+            <div className="user-data">
+              <h3>User Information</h3>
+              <p><strong>Name:</strong> {userData.name}</p>
+              <p><strong>Email:</strong> {userData.email}</p>
+              <h4>Addresses:</h4>
+              {userData.addresses && userData.addresses.length > 0 ? (
+                <ul>
+                  {userData.addresses.map((addr, idx) => (
+                    <li key={idx}>
+                      {addr.street}, {addr.city}, {addr.state} - {addr.zipCode}, {addr.country}
+                      <br />
+                      Phone: {addr.phone}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No address found</p>
+              )}
+            </div>
+          ) : null}
+        </>
       ) : (
         <form onSubmit={handleSubmit} className="address-form">
           {[
