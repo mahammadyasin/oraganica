@@ -151,7 +151,19 @@ public class ProductServiceImpl implements ProductService {
         if (category == null || category.isEmpty()) {
             return List.of();
         } else {
+            if (category.equals("ALL")) {
+                List<ProductResponseForFilter> allProducts = this.productRepo.findByCategorieList(Constants.CATEGORIES);
+                allProducts.forEach(product -> {
+                    product.setImg(decompressBytes(product.getImg()));
+                });
+                return allProducts.stream()
+                        .map(product -> this.modelMapper.map(product, ProductDto.class))
+                        .collect(Collectors.toList());
+            }
             List<ProductResponseForFilter> products = this.productRepo.findByCategory(category);
+            products.forEach(p -> {
+                p.setImg(decompressBytes(p.getImg()));
+            });
             return products.stream()
                     .map(product -> this.modelMapper.map(product, ProductDto.class))
                     .collect(Collectors.toList());
@@ -159,23 +171,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseForFilter> getProductsByFilter(String category, Integer fromPrice, Integer toPrice, String search) {
+    public List<ProductResponseForFilter> getProductsByFilter(String category, Integer fromPrice, Integer toPrice,
+            String search) {
         List<ProductResponseForFilter> products = new ArrayList<>();
         if (category != null && !category.isEmpty()) {
-            List<ProductResponseForFilter> productsByCatergory = this.productRepo.findByCategory(category);
-            productsByCatergory.forEach(product -> {
-                products.add(product);
-            });
-            ;
+            if (category.equals("ALL")) {
+                List<ProductResponseForFilter> allProducts = this.productRepo.findByCategorieList(Constants.CATEGORIES);
+                allProducts.forEach(product -> {
+                    product.setImg(decompressBytes(product.getImg()));
+                    products.add(product);
+                });
+                // return products;
+            } else {
+                List<ProductResponseForFilter> productsByCatergory = this.productRepo.findByCategory(category);
+                productsByCatergory.forEach(product -> {
+                    product.setImg(decompressBytes(product.getImg()));
+                    products.add(product);
+                });
+            }
         } else if (fromPrice != null && toPrice != null) {
             List<ProductResponseForFilter> productsByRange = this.productRepo.findByPriceRange(Float.valueOf(fromPrice),
                     Float.valueOf(toPrice));
             productsByRange.forEach(product -> {
+                product.setImg(decompressBytes(product.getImg()));
                 products.add(product);
             });
         } else if (search != null && !search.isEmpty()) {
             List<ProductResponseForFilter> productsBy = this.productRepo.findByProductBySearch(search);
             productsBy.forEach(product -> {
+                product.setImg(decompressBytes(product.getImg()));
                 products.add(product);
             });
         }

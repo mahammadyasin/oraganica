@@ -73,7 +73,7 @@ export const ProductDetails = () => {
   return (
     <>
       <>
-        <Header />
+        {/* <Header /> */}
         <div className="pd-wrap">
           <div
             className="container"
@@ -210,7 +210,7 @@ export const ProductDetails = () => {
             </div>
           </div>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </>
     </>
   );

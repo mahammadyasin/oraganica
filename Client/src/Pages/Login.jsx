@@ -53,7 +53,7 @@ export const Login = () => {
     const data = await res.json();
     sessionStorage.setItem("token", data.jwt);
     if (res.status === 200) {
-      sessionStorage.setItem("role", data.role[0])
+      sessionStorage.setItem("role", data.role[0]);
       onToast("Login Successfull!!");
       window.location.href = "/";
     } else {
@@ -63,7 +63,7 @@ export const Login = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="d-flex flex-column justify-content-center" id="login-box">
         <div className="login-box-header">
           <h4

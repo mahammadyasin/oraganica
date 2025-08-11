@@ -1,6 +1,5 @@
 package com.organica.controllers;
 
-
 import com.organica.payload.PaymentDetails;
 import com.organica.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @GetMapping("/{amount}")
-    public ResponseEntity<PaymentDetails> CreatePayment(@PathVariable Double amount){
+    public ResponseEntity<PaymentDetails> CreatePayment(@PathVariable Double amount) {
         PaymentDetails paymentDetails = this.paymentService.CreateOrder(amount);
         return new ResponseEntity<>(paymentDetails, HttpStatusCode.valueOf(200));
     }

@@ -18,7 +18,6 @@ export const Cart = () => {
 
   const tax = totalAmount * 0.18;
 
-
   const fatchCart = async () => {
     // get cart item
     console.log(token);
@@ -67,12 +66,12 @@ export const Cart = () => {
         alert(response.razorpay_signature);
       },
       prefill: {
-        name: "vivek",
-        email: "vivek@gmail.com",
-        contact: 7405999619,
+        name: "yasin",
+        email: "yasin@gmail.com",
+        contact: 63619909972,
       },
       notes: {
-        address: "ABC, Delhi",
+        address: "ABC, Karntaka",
       },
       theme: {
         color: "#3399cc",
@@ -95,7 +94,7 @@ export const Cart = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="shopping-cart">
         <div className="px-4 px-lg-0">
           <div className="pb-5">
@@ -145,6 +144,14 @@ export const Cart = () => {
                   {/* End */}
                 </div>
               </div>
+              <div>
+                <div className="row py-5 p-4 bg-white rounded shadow-sm">
+                  <p>address</p>
+                </div>
+                <div className="col-lg-6">Add Address</div>
+                <div className="col-lg-6"> </div>
+              </div>
+
               <div className="row py-5 p-4 bg-white rounded shadow-sm">
                 <div className="col-lg-6"></div>
                 <div className="col-lg-6">
@@ -192,7 +199,7 @@ export const Cart = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
